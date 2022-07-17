@@ -176,9 +176,9 @@ class SCD30
     end
     
     # 数値に変換
-    co2  = floatCast( buf[0],  buf[1],  buf[3],  buf[4]  )
-    temp = floatCast( buf[6],  buf[7],  buf[9],  buf[10] )
-    humi = floatCast( buf[12], buf[13], buf[14], buf[15] )
+    @co2  = floatCast( buf[0],  buf[1],  buf[3],  buf[4]  )
+    @temp = floatCast( buf[6],  buf[7],  buf[9],  buf[10] )
+    @humi = floatCast( buf[12], buf[13], buf[14], buf[15] )
 
     # 変換の確認用
     #co2  = floatCast( 0x43, 0xdb, 0x8c, 0x2e )
@@ -187,11 +187,34 @@ class SCD30
     #p co2, temp, humi
     
     #戻り値
-    readdata = [ co2[0].to_f / 100.0, temp[0].to_f / 100.0, humi[0].to_f / 100.0 ]
+    readdata = [ @co2[0].to_f / 100.0, @temp[0].to_f / 100.0, @humi[0].to_f / 100.0 ]
     
     return readdata
   end
 
+  def ready?
+    flag = false
+    if dataReady()
+      var = read()
+      if var
+        flag = true
+      end
+    end
+    return flag
+  end
+
+  def co2
+    return @co2[0].to_f / 100.0
+  end
+
+  def temp
+    return @temp[0].to_f / 100.0
+  end
+
+  def humi
+    return @humi[0].to_f / 100.0
+  end
+  
   def sendCommand( data, argument )
     buffer = Array.new(5)
     buffer[0] = data[0]
@@ -202,8 +225,7 @@ class SCD30
     return @i2c.__write(SCD30::I2CADDR_DEFAULT, buffer)
     sleep(0.1)
   end
-
-
+  
   def readRegister( buffer )
     # the SCD30 really wants a stop before the read!
     @i2c.__write(SCD30::I2CADDR_DEFAULT, buffer )
