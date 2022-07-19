@@ -192,7 +192,7 @@ class SCD30
     return readdata
   end
 
-  def ready?
+  def is_ready?
     flag = false
     if dataReady()
       var = read()
