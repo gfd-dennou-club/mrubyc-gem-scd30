@@ -14,8 +14,6 @@ Arduino/libraries/Adafruit_SCD30/Adafruit_SCD30.cpp
 #I2C 初期化
 i2c = I2C.new()
 
-sleep(1)
-
 # CO2センサ初期化
 scd30 = SCD30.new(i2c)
 sleep(1)
