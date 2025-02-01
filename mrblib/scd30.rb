@@ -44,7 +44,7 @@ class SCD30
   # @brief Performs a software reset initializing registers to their power on state.
   #
   def reset
-    retval = @i2c.__write( SCD30::I2CADDR_DEFAULT, SCD30::CMD_SOFT_RESET )
+    retval = @i2c.write( SCD30::I2CADDR_DEFAULT, SCD30::CMD_SOFT_RESET )
     sleep(0.03)
     return retval
   end
@@ -163,10 +163,10 @@ class SCD30
   # @return true: success false: failure
   #
   def read
-    @i2c.__write(SCD30::I2CADDR_DEFAULT, SCD30::CMD_READ_MEASUREMENT )
+    @i2c.write(SCD30::I2CADDR_DEFAULT, SCD30::CMD_READ_MEASUREMENT )
     sleep(0.004)
 
-    buf = @i2c.__read(SCD30::I2CADDR_DEFAULT, 18)   # 18 バイト分読み込み
+    buf = @i2c.readfrom(SCD30::I2CADDR_DEFAULT, 18)   # 18 バイト分読み込み
 
     # CRC のチェック
     [0,3,6,9,12,15].each do |i|
@@ -223,14 +223,14 @@ class SCD30
     buffer[2] = argument >> 8
     buffer[3] = argument & 0xFF
     buffer[4] = crc8( [buffer[2], buffer[3]])
-    return @i2c.__write(SCD30::I2CADDR_DEFAULT, buffer)
+    return @i2c.write(SCD30::I2CADDR_DEFAULT, buffer)
   end
   
   def readRegister( buffer )
     # the SCD30 really wants a stop before the read!
-    @i2c.__write(SCD30::I2CADDR_DEFAULT, buffer )
+    @i2c.write(SCD30::I2CADDR_DEFAULT, buffer )
     sleep(0.004)
-    buf = @i2c.__read(SCD30::I2CADDR_DEFAULT, 3)   # 3 バイト分読み込み
+    buf = @i2c.readfrom(SCD30::I2CADDR_DEFAULT, 3)   # 3 バイト分読み込み
 
     #CRC check
     if crc8([buf[0], buf[1]]) != buf[2]
