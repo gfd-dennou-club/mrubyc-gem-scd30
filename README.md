@@ -12,7 +12,7 @@ Arduino/libraries/Adafruit_SCD30/Adafruit_SCD30.cpp
 ## sample 
 ```
 #I2C 初期化
-i2c = I2C.new(22, 21, 0, 50_000)
+i2c = I2C.new()
 
 sleep(1)
 
